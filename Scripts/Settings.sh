@@ -45,7 +45,15 @@ fi
 
 #手动调整的插件
 if [ -n "$WRT_PACKAGE" ]; then
-	echo -e "$WRT_PACKAGE" >> ./.config
+	while IFS= read -r pkg; do
+		pkg="$(echo "$pkg" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+		[ -z "$pkg" ] && continue
+		case "$pkg" in
+			CONFIG_*) echo "$pkg" >> ./.config ;;
+			*) echo "CONFIG_PACKAGE_${pkg}=y" >> ./.config ;;
+		esac
+	done <<< "$WRT_PACKAGE"
+
 fi
 
 #无WIFI配置标志
