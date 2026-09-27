@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2026 VIKINGYFY
+
+name: Cache-Clean
+
+on:
+  #自动清理：每周一早上4点
+  schedule:
+    - cron: 23 20 * * 0
+  #手动清理
+  workflow_dispatch:
+
+# 最小权限：checkout 只读 + 删除缓存需要 actions: write
+permissions:
+  contents: read
+  actions: write
+
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Projects
+        uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v5 @ 2026-09-27
+
+      - name: Cache Clean
+        run: gh cache delete --all
