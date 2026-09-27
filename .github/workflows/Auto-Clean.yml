@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2026 VIKINGYFY
+
+name: Auto-Clean
+
+on:
+  #自动清理：每天早上5点
+  schedule:
+    - cron: 31 21 * * *
+  #手动清理
+  workflow_dispatch:
+
+# 最小权限：只删除 releases/tags（contents）与 workflow runs（actions）
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  auto_clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old Releases and Workflows
+        uses: ophub/delete-releases-workflows@9c4138644d440d66f145e5ab03a98f03b5cbf2b0 # main @ 2026-09-27
+        with:
+          gh_token: ${{secrets.GITHUB_TOKEN}}
+          delete_releases: true
+          releases_keep_latest: 0
+          delete_tags: true
+          delete_workflows: true
+          workflows_keep_day: 0
